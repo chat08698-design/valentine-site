@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Valentine Site</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      background: linear-gradient(-45deg,#f3e8ff,#fbcfe8,#ddd6fe,#fae8ff);
+      background-size: 400% 400%;
+      animation: gradientFlow 12s ease infinite;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    .glow.one { top: -150px; left: -150px; background: #f472b6; }
+    .glow.two { bottom: -150px; right: -150px; background: #a78bfa; }
+
+    .flowers {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+      padding: 30px;
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .flowers span { font-size: 24px; }
+
+    .card {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      margin: auto;
+      margin-top: 15vh;
+      background: rgba(255,255,255,0.8);
+      padding: 60px;
+      border-radius: 30px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      font-size: 42px;
+      color: #6b21a8;
+      margin-bottom: 20px;
+      transition: margin-bottom 0.2s ease;
+    }
+
+    p {
+      font-size: 22px;
+      font-weight: bold;
+      color: #6b21a8;
+    }
+
+    #buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      padding: 18px 40px;
+      border-radius: 999px;
+      font-size: 18px;
+      font-weight: bold;
+      margin: 10px;
+      transition: transform 0.2s ease;
+    }
+
+    .yes { background: #10b981; color: white; }
+    .no { background: #ddd6fe; color: #4c1d95; }
+
+    .fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 80px;
+      text-align: center;
+    }
+
+    .fullscreen h1 {
+      margin-bottom: 60px;
+    }
+
+    .big-yes {
+      width: 80vw;
+      max-width: 500px;
+      height: 120px;
+      font-size: 48px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="glow one"></div>
+  <div class="glow two"></div>
+  <div class="flowers" id="flowers"></div>
+
+  <div class="card" id="card">
+    <h1 id="title">HI BABYYY</h1>
+    <div id="buttons">
+      <button class="yes" onclick="nextStep()">HI</button>
+    </div>
+    <p id="bottom"></p>
+  </div>
+
+  <audio id="pop" src="pop.mp3"></audio>
+  <audio id="music" src="music.mp3" loop></audio>
+
+  <script>
+    let step = 0;
+    let negCount = 0;
+    let yesScale = 1;
+    let noScale = 1;
+
+    const stages = [
+      { title: "WHYYYYYYYYYY😔😔😔", negText: "di ko ahhh", bottom: "PLEASEEE 😔" },
+      { title: "Let me be your valentine pooo plssss", negText: "next time nalang lagii", bottom: "PLEASEEE 😔" },
+      { title: "SIGE NA PLEAAASEEE", negText: "okay isipan ko pa...", bottom: "PLEASEEE 😔" },
+      { title: "Kahirap mo naman pilitinn oiii", negText: "Lisensya anay kay papa ah", bottom: "PLEASEEE 😔" },
+      { title: "Sigee malisensya lagi lagi ko", negText: "dapat personal ha", bottom: "OPOOO" },
+      { title: "Okay nalang ah..", negText: "aysus pasuya pa", bottom: "Syudiiii" }
+    ];
+
+    function playPop() {
+      const pop = document.getElementById("pop");
+      pop.currentTime = 0;
+      pop.play();
+    }
+
+    function startMusic() {
+      const music = document.getElementById("music");
+      if (music.paused) {
+        music.volume = 0.4;
+        music.play();
+      }
+    }
+
+    function nextStep() {
+      playPop();
+      startMusic();
+      step++;
+
+      if (step === 1) setPage("I HAVE A QUESTION", "Ano yunn??");
+      if (step === 2) setPage("ermmm...", "poo?");
+      if (step === 3) showQuestion();
+    }
+
+    function setPage(title, btn) {
+      document.getElementById("title").innerText = title;
+      document.getElementById("buttons").innerHTML =
+        `<button class="yes" onclick="nextStep()">${btn}</button>`;
+    }
+
+    function showQuestion() {
+      document.getElementById("title").innerText = "May I Be Your Valentine?";
+      document.getElementById("buttons").innerHTML = `
+        <button class="yes" id="yesBtn" onclick="finalYes()">YESS!</button>
+        <button class="no" id="noBtn" onclick="negativeClick()">eh</button>
+      `;
+    }
+
+    function negativeClick() {
+      playPop();
+      negCount++;
+
+      yesScale += 0.5;
+      noScale -= 0.12;
+
+      const yesBtn = document.getElementById("yesBtn");
+      const noBtn = document.getElementById("noBtn");
+      const title = document.getElementById("title");
+
+      yesBtn.style.transform = `scale(${yesScale})`;
+      noBtn.style.transform = `scale(${Math.max(noScale, 0.3)})`;
+
+      const extraSpace = (yesScale - 1) * 50;
+      title.style.marginBottom = `${20 + extraSpace}px`;
+
+      if (negCount >= 6) {
+        fullscreenYes();
+        return;
+      }
+
+      const s = stages[negCount - 1];
+      title.innerText = s.title;
+      noBtn.innerText = s.negText;
+      document.getElementById("bottom").innerText = s.bottom;
+    }
+
+    function fullscreenYes() {
+      const card = document.getElementById("card");
+      card.className = "fullscreen";
+      card.innerHTML = `
+        <h1>May I Be Your Valentine For Today?</h1>
+        <button class="yes big-yes" onclick="finalYes()">YESS!</button>
+      `;
+    }
+
+    function finalYes() {
+      playPop();
+      document.getElementById("card").innerHTML =
+        `<h1>YAYYY SEE U LATERRR</h1>`;
+    }
+
+    function makeFlowers() {
+      const f = document.getElementById("flowers");
+      ["🌹","🌷","🌸"].forEach(icon => {
+        for (let i = 0; i < 12; i++) {
+          const s = document.createElement("span");
+          s.innerText = icon;
+          f.appendChild(s);
+        }
+      });
+    }
+
+    makeFlowers();
+  </script>
+</body>
+</html>
