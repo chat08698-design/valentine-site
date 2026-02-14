@@ -10,7 +10,7 @@
       margin: 0;
       font-family: Arial, sans-serif;
       overflow: hidden;
-      background: linear-gradient(-45deg,#f3e8ff,#fbcfe8,#ddd6fe,#fae8ff);
+      background: linear-gradient(-45deg,#3b0764,#5b21b6,#7c3aed,#9333ea);
       background-size: 400% 400%;
       animation: gradientFlow 12s ease infinite;
     }
@@ -21,32 +21,31 @@
       100% { background-position: 0% 50%; }
     }
 
-    .glow {
-      position: absolute;
-      width: 500px;
-      height: 500px;
-      border-radius: 50%;
-      filter: blur(120px);
-      opacity: 0.6;
-      z-index: 0;
-    }
-
-    .glow.one { top: -150px; left: -150px; background: #f472b6; }
-    .glow.two { bottom: -150px; right: -150px; background: #a78bfa; }
-
-    .flowers {
-      position: absolute;
+    .hearts {
+      position: fixed;
       inset: 0;
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 20px;
-      padding: 30px;
-      opacity: 0.6;
       pointer-events: none;
+      overflow: hidden;
       z-index: 1;
     }
 
-    .flowers span { font-size: 24px; }
+    .heart {
+      position: absolute;
+      font-size: 24px;
+      opacity: 0.35;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(100vh) scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0.6;
+      }
+    }
 
     .card {
       position: relative;
@@ -54,7 +53,7 @@
       max-width: 600px;
       margin: auto;
       margin-top: 15vh;
-      background: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.85);
       padding: 60px;
       border-radius: 30px;
       text-align: center;
@@ -104,10 +103,9 @@
       align-items: center;
       padding-top: 80px;
       text-align: center;
-    }
-
-    .fullscreen h1 {
-      margin-bottom: 60px;
+      background: linear-gradient(-45deg,#3b0764,#5b21b6,#7c3aed,#9333ea);
+      background-size: 400% 400%;
+      animation: gradientFlow 12s ease infinite;
     }
 
     .big-yes {
@@ -116,14 +114,20 @@
       height: 120px;
       font-size: 48px;
     }
+
+    .final-card {
+      background: rgba(255,255,255,0.9);
+      padding: 60px;
+      border-radius: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="glow one"></div>
-  <div class="glow two"></div>
-  <div class="flowers" id="flowers"></div>
+  <div class="hearts" id="hearts"></div>
 
   <div class="card" id="card">
     <h1 id="title">HI BABYYY</h1>
@@ -144,7 +148,7 @@
 
     const stages = [
       { title: "WHYYYYYYYYYY😔😔😔", negText: "di ko ahhh", bottom: "PLEASEEE 😔" },
-      { title: "Let me be your valentine pooo plssss", negText: "next time nalang lagii", bottom: "PLEASEEE 😔" },
+      { title: "Let me be your valentine pooo huhuu", negText: "next time nalang lagii", bottom: "PLEASEEE 😔" },
       { title: "SIGE NA PLEAAASEEE", negText: "okay isipan ko pa...", bottom: "PLEASEEE 😔" },
       { title: "Kahirap mo naman pilitinn oiii", negText: "Lisensya anay kay papa ah", bottom: "PLEASEEE 😔" },
       { title: "Sigee malisensya lagi lagi ko", negText: "dapat personal ha", bottom: "OPOOO" },
@@ -228,22 +232,26 @@
 
     function finalYes() {
       playPop();
+      document.getElementById("card").className = "card";
       document.getElementById("card").innerHTML =
-        `<h1>YAYYY SEE U LATERRR</h1>`;
+        `<div class="final-card"><h1>YAYYY SEE U LATERRR</h1></div>`;
     }
 
-    function makeFlowers() {
-      const f = document.getElementById("flowers");
-      ["🌹","🌷","🌸"].forEach(icon => {
-        for (let i = 0; i < 12; i++) {
-          const s = document.createElement("span");
-          s.innerText = icon;
-          f.appendChild(s);
-        }
-      });
+    function makeHearts() {
+      const container = document.getElementById("hearts");
+      for (let i = 0; i < 25; i++) {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.innerText = "💜";
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.animationDuration = 6 + Math.random() * 8 + "s";
+        h.style.fontSize = 16 + Math.random() * 24 + "px";
+        h.style.animationDelay = Math.random() * 8 + "s";
+        container.appendChild(h);
+      }
     }
 
-    makeFlowers();
+    makeHearts();
   </script>
 </body>
 </html>
